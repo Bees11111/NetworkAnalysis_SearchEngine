@@ -50,7 +50,7 @@ def word_occurrences(data_text, num_words=25, visualisation=False):
 
 
 def print_top5_cosine_similar_documents(
-    message, tf_vectorizer, tfidf_vectorizer, X_tf, X_tfidf, data_text
+    message, tf_vectorizer, tfidf_vectorizer, X_tf, X_tfidf, data_text, idf=False
 ):
     """
     This function takes in a message and computes the top 5 most similar documents
@@ -63,39 +63,51 @@ def print_top5_cosine_similar_documents(
         X_tf : the document-term matrix for the TF model
         X_tfidf : the document-term matrix for the TFIDF model
         data_text : a DataFrame containing the documents
+        idf : a boolean flag to indicate whether to use the TF or TFIDF model. Default is False.
 
     Retruns:
-        Prints the top 5 most similar documents for both TF and TFIDF, along with their similarity scores.
+        Prints the top 5 most similar documents for TF or TFIDF, along with their similarity scores.
     """
     # Transform the query into a list of individual words
     message = message.lower().split()
 
-    # Create the pseudo-document using the input message (joined into a string)
-    pseudo_document_tf = tf_vectorizer.transform([" ".join(message)])
-    pseudo_document_tfidf = tfidf_vectorizer.transform([" ".join(message)])
+    if idf:
+        # Create the pseudo-document using the input message (joined into a string)
+        pseudo_document_tfidf = tfidf_vectorizer.transform([" ".join(message)])
 
-    # Compute cosine similarity between the query and all documents in both TF and TFIDF models
-    similarities_tf = cosine_similarity(X_tf, pseudo_document_tf)
-    similarities_tfidf = cosine_similarity(X_tfidf, pseudo_document_tfidf)
+        # Compute cosine similarity between the query and all documents
+        similarities_tfidf = cosine_similarity(X_tfidf, pseudo_document_tfidf)
 
-    # Get the indices of the top 5 most similar documents (sorted by similarity score)
-    top5_tf = np.argsort(similarities_tf.flatten())[::-1][:5]
-    top5_tfidf = np.argsort(similarities_tfidf.flatten())[::-1][:5]
+        # Get the indices of the top 5 most similar documents (sorted by similarity score)
+        top5_tfidf = np.argsort(similarities_tfidf.flatten())[::-1][:5]
 
-    # Display the results for TF
-    print(f"TF    : {top5_tf} | {similarities_tf[top5_tf].flatten()}")
-    print(
-        data_text.iloc[top5_tf].drop(columns=["text", "abstract", "references"]),
-        "\n\n\n\n",
-    )
+        # Display the results for TFIDF
+        print(f"Top 5 document IDs corresponding to your query: {top5_tfidf}")
+        print(
+            f"Similarity scores for the found documents: {similarities_tfidf[top5_tfidf].flatten()}"
+        )
+        return data_text.iloc[top5_tfidf]
 
-    # Display the results for TFIDF
-    print(f"TFIDF : {top5_tfidf} | {similarities_tfidf[top5_tfidf].flatten()}")
-    print(data_text.iloc[top5_tfidf].drop(columns=["text", "abstract", "references"]))
+    else:
+        # Create the pseudo-document using the input message (joined into a string)
+        pseudo_document_tf = tf_vectorizer.transform([" ".join(message)])
+
+        # Compute cosine similarity between the query and all documents
+        similarities_tf = cosine_similarity(X_tf, pseudo_document_tf)
+
+        # Get the indices of the top 5 most similar documents (sorted by similarity score)
+        top5_tf = np.argsort(similarities_tf.flatten())[::-1][:5]
+
+        # Display the results for TF
+        print(f"Top 5 document IDs corresponding to your query: {top5_tf}")
+        print(
+            f"Similarity scores for the found documents: {similarities_tf[top5_tf].flatten()}"
+        )
+        return data_text.iloc[top5_tf]
 
 
 def print_top5_euclidian_similar_documents(
-    message, tf_vectorizer, tfidf_vectorizer, X_tf, X_tfidf, data_text
+    message, tf_vectorizer, tfidf_vectorizer, X_tf, X_tfidf, data_text, idf = False
 ):
     """
     This function takes in a message and computes the top 5 most similar documents
@@ -108,32 +120,41 @@ def print_top5_euclidian_similar_documents(
         X_tf : the document-term matrix for the TF model
         X_tfidf : the document-term matrix for the TFIDF model
         data_text : a DataFrame containing the documents
+        idf : a boolean flag to indicate whether to use the TF or TFIDF model. Default is False.
 
     Retruns:
-        Prints the top 5 most similar documents for both TF and TFIDF, along with their similarity scores.
+        Prints the top 5 most similar documents for TF or TFIDF, along with their similarity scores.
     """
     # Transform the query into a list of individual words
     message = message.lower().split()
 
-    # Create the pseudo-document using the input message (joined into a string)
-    pseudo_document_tf = tf_vectorizer.transform([" ".join(message)])
-    pseudo_document_tfidf = tfidf_vectorizer.transform([" ".join(message)])
+    if idf:
+        # Create the pseudo-document using the input message (joined into a string)
+        pseudo_document_tfidf = tfidf_vectorizer.transform([" ".join(message)])
 
-    # Compute cosine similarity between the query and all documents in both TF and TFIDF models
-    similarities_tf = euclidean_distances(X_tf, pseudo_document_tf)
-    similarities_tfidf = euclidean_distances(X_tfidf, pseudo_document_tfidf)
+        # Compute cosine similarity between the query and all documents
+        similarities_tfidf = euclidean_distances(X_tfidf, pseudo_document_tfidf)
 
-    # Get the indices of the top 5 most similar documents (sorted by similarity score)
-    top5_tf = np.argsort(similarities_tf.flatten())[::-1][:5]
-    top5_tfidf = np.argsort(similarities_tfidf.flatten())[::-1][:5]
+        # Get the indices of the top 5 most similar documents (sorted by similarity score)
+        top5_tfidf = np.argsort(similarities_tfidf.flatten())[:5]
 
-    # Display the results for TF
-    print(f"TF    : {top5_tf} | {similarities_tf[top5_tf].flatten()}")
-    print(
-        data_text.iloc[top5_tf].drop(columns=["text", "abstract", "references"]),
-        "\n\n\n\n",
-    )
+        # Display the results for TFIDF
+        print(f"Top 5 document IDs corresponding to your query: {top5_tfidf}")
+        print(
+            f"Similarity scores for the found documents: {similarities_tfidf[top5_tfidf].flatten()}"
+        )
+        return data_text.iloc[top5_tfidf]
 
-    # Display the results for TFIDF
-    print(f"TFIDF : {top5_tfidf} | {similarities_tfidf[top5_tfidf].flatten()}")
-    print(data_text.iloc[top5_tfidf].drop(columns=["text", "abstract", "references"]))
+    else:
+        # Create the pseudo-document using the input message (joined into a string)
+        pseudo_document_tf = tf_vectorizer.transform([" ".join(message)])
+
+        # Compute cosine similarity between the query and all documents
+        similarities_tf = euclidean_distances(X_tf, pseudo_document_tf)
+
+        # Get the indices of the top 5 most similar documents (sorted by similarity score)
+        top5_tf = np.argsort(similarities_tf.flatten())[:5]
+
+        # Display the results for TF
+        print(f"TF    : {top5_tf} | {similarities_tf[top5_tf].flatten()}")
+        return data_text.iloc[top5_tf]

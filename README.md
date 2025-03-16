@@ -6,29 +6,32 @@
 
 ---
 
-## Installation et Lancement de l’Environnement Virtuel
+This project is a search engine using graphs and network analysis.
 
-1. **Créer l'environnement virtuel :**
+
+## Installing and running the virtual environment
+
+1. **Create the virtual environment :**
 
    ```bash
    python -m venv env_netanalysis
    ```
 
-2. **Activer l'environnement virtuel :**
+2. **Activate the windows environment :**
 
-   - **Sous Windows**
+   - **Windows**
 
      ```bash
      .\env_netanalysis\Scripts\activate
      ```
 
-   - **Sous macOS et Linux**
+   - **Linux and MacOS**
 
      ```bash
      source env_netanalysis/bin/activate
      ```
 
-3. **Installer les dépendances :**
+3. **Install dependencies :**
 
    ```bash
    pip install -r .\requirements.txt
