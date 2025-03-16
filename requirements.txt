@@ -6,3 +6,7 @@ nltk
 matplotlib
 seaborn
 umap
+wordcloud
+networkx
+ipysigma
+python-louvain
