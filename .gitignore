@@ -1,6 +1,7 @@
 env_netanalysis/
 env_na/
-data_project.csv
+data_text.csv
+*.npy
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
